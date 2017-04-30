@@ -7,22 +7,23 @@ $(document).ready(function() {
 			data: "{}",
 			success: function(data) {
 				console.log(data);
-				var result = data.results.map(value => "<li>"+ value.original_title +"</li>" + "<li>" +value.overview+ "</li>" + "<li>" + "<img src=https://image.tmdb.org/t/p/w500"+ value.poster_path +">" + "<li>"+ "<button class='add_review'>" + "Add a review" + "</button>" )
-				$('#list').append(result);
+				var result = data.results.map(value => "<div class='col-md-6'>" + "<div class='thumbnail'>" + "<h1 class='text-center'>"+ value.original_title +"</h1>" + "<p class='text-center'>" +value.overview+ "</p>" + "<img src=https://image.tmdb.org/t/p/w500"+ value.poster_path +">" + "<button class='add_review btn btn-md btn-primary center'>" + "Add a review" + "</button>" + "</div" +"</div")
+				$('.movies').append(result);
 
 			}
 		})
 
-		
+
 
 });
 
 </script>
+<div class="container">
+	<div class="row">
+		<div class="movies">
 
-
-<ul id="list"> 	
-	
-</ul>
-
-
-<button> Add a review </button>
+		</div>
+			
+		</div>
+	</div>
+</div>
