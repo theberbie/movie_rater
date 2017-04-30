@@ -1,1 +1,28 @@
-<h1> Reviews ! </h1>
+<script>
+$(document).ready(function() {
+		$.ajax({
+			url: "https://api.themoviedb.org/3/movie/popular?api_key=950598afe38cbe6f39485b57233eaad3",
+			method: "GET",
+			headers: {},
+			data: "{}",
+			success: function(data) {
+				console.log(data);
+				var result = data.results.map(value => "<li>"+ value.original_title +"</li>" + "<li>" +value.overview+ "</li>" + "<li>" + "<img src=https://image.tmdb.org/t/p/w500"+ value.poster_path +">" + "<li>"+ "<button class='add_review'>" + "Add a review" + "</button>" )
+				$('#list').append(result);
+
+			}
+		})
+
+		
+
+});
+
+</script>
+
+
+<ul id="list"> 	
+	
+</ul>
+
+
+<button> Add a review </button>
