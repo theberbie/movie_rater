@@ -15,3 +15,42 @@
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+.white-box {-moz-box-shadow: 1px 1px 2px 0 #d0d0d0;
+  -webkit-box-shadow: 1px 1px 2px 0 #d0d0d0;
+  box-shadow: 1px 1px 2px 0 #d0d0d0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-color: #e4e4e4 #bebebd #bebebd #e4e4e4;
+  margin-top:10px;
+  margin-bottom:15px;
+  padding:20px;
+  clear:both;}
+
+ .poster img {
+ width: 250px;
+ }
+
+ .poster-thumbnail {
+ 	height: 200px;
+ 	width: 200px;
+ 	
+ 	}
+
+ .movie-list li{
+    list-style-type: none;
+    display: inline-block;
+    margin-top: 20px;
+    
+}
+
+.viewing-options {
+	margin:0 0 0 60px;
+}
+	
+
+
+
+.title {
+	margin-top: 0;
+}

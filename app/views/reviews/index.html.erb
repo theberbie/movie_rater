@@ -1,29 +1,47 @@
 <script>
-$(document).ready(function() {
-		$.ajax({
-			url: "https://api.themoviedb.org/3/movie/popular?api_key=950598afe38cbe6f39485b57233eaad3",
-			method: "GET",
-			headers: {},
-			data: "{}",
-			success: function(data) {
-				console.log(data);
-				var result = data.results.map(value => "<div class='col-md-6'>" + "<div class='thumbnail'>" + "<h1 class='text-center'>"+ value.original_title +"</h1>" + "<p class='text-center'>" +value.overview+ "</p>" + "<img src=https://image.tmdb.org/t/p/w500"+ value.poster_path +">" + "<button class='add_review btn btn-md btn-primary center'>" + "Add a review" + "</button>" + "</div" +"</div")
-				$('.movies').append(result);
+	$(document).ready(function() {
+		var keys = [];
 
-			}
-		})
+		for (var key in localStorage) {
+			keys.push(key);
+		}
+
+		var reviews = keys.map(key => JSON.parse(localStorage.getItem(key)));
+
+		reviews.forEach(review => {
+			$('#' + review.id).html('<h3>' + review.title + '</h3>');
+		});
+
+	});
 
 
-
-});
 
 </script>
-<div class="container">
-	<div class="row">
-		<div class="movies">
+	<h1 class=text-center> View All Review </h1>
 
-		</div>
-			
+	<% @reviews.each do |review| %>
+		<% if review.movie_id.present? %>
+		    <script>
+		    var movieInfo=localStorage.getItem(<%=review.movie_id%>);
+		    var movieData = JSON.parse(movieInfo);
+
+		    localStorage.getItem(<%=review.movie_id%>);
+		    console.log(movieData);
+		   $(".title").append(movieData.original_title);
+		    </script>
+
+
+	<div class="container">
+	<div class="row">
+	<div class="white-box col-md-6">
+		<p class="title text-center" id=<%= review.movie_id %> > </p>
+		
+		<p> Rating:	<%=review.humanized_rating%> </p>
+		<p> Review:	<%=review.comment%> </p>
+		<p> Movie id: <%=review.movie_id %> </p>
+
 		</div>
 	</div>
 </div>
+<% end %> 	
+<% end %> 

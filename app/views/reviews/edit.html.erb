@@ -1,0 +1,9 @@
+<div class="white-box">
+	<h1> Edit Review </h1>
+	<%= simple_form_for @review do |f| %>
+		<%= f.input :rating, as: :select, collection: Review::RATINGS , class:'rating_star'%>
+        <%= f.input :comment, class: 'comment' %>
+        <br />
+        <%= f.submit 'Update Review'%>
+    <% end %>
+</div>

@@ -1,0 +1,37 @@
+<script>
+<% unless @reviews.empty? %>
+	$.ajax({
+			url: "https://api.themoviedb.org/3/movie/"+<%=@reviews[0].movie_id%>+"?api_key=950598afe38cbe6f39485b57233eaad3&language=en-US",
+			method: "GET",
+			headers: {},
+			success: function(data) {
+			    console.log(data);
+			    $('.title').append(data.title);
+			    $('.poster').append("<img src=https://image.tmdb.org/t/p/w500"+ data.poster_path +">" );
+			}
+		})
+<% end %>
+
+</script>
+<h1 class="title text-center">  </h1>
+<div class="poster text-center"> 
+
+</div>
+
+
+	<% @reviews.each do |review| %>
+		<div class="white-box col-md-3 text-center">
+		<small> Created on: <%=review.created_at.strftime('%B %d, %Y') %> </small>	
+		<p>Rating: <%= review.humanized_rating %> </p>
+		<% if review.comment.present? %>
+		<p>Review: <%= review.comment %> </p>
+		<% end %>
+		<small> <%= review.user.email %> </small>
+		<br />
+		<% if current_user == review.user %>
+			<%=link_to "Edit Review", edit_review_path(review.id) %>
+			<%=link_to "Delete Review", review_path(review), method: :delete, data: {confirm: "Are you sure you want to delete your review?"} %>
+		<% end %>
+		</div>
+	<% end %>
+

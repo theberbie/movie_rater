@@ -1,0 +1,194 @@
+<script>
+$(document).ready(function() {
+	var activeId = null;
+	var reviews = {};
+
+	function addReviewClick(event) {
+		var id = $(this).dataset.movieId;
+		alert(id);
+		console.log(id);
+	}
+
+	function mapMovies(data) {
+	    return data.results.map(function(value) {
+	    		  	var html = "<div class='col-sm-6 white-box'>" + 
+			"<img src=https://image.tmdb.org/t/p/w500" + value.poster_path + " class='poster-thumbnail pull-left'>" + 
+			"<h3 class='title text-center'>"+ "<a href=/reviews/"+ value.id + ">" + value.original_title +"</a>"+ "</h3>" + 
+			"<small class='center'> Release Date: " + value.release_date + "</small>" + 
+			"<blockquote class='review'>" + "</blockquote>" + 
+			"<a   class='add-review pull-right' data-toggle= 'modal' data-movie-id='" + value.id + "' data-target='#myModal'>"+ "Leave a review " + "</a>" + "<p id='review" + value.id + "'>"  + "</p>" +" </div>" +"</div>"+ "</div>";
+
+			localStorage.setItem(value.id, JSON.stringify(value));
+			debugger;
+
+	    	return { 
+	    		html: html, 
+	    		value: value 
+	    	};
+
+		});
+
+	}
+
+	function appendMovies(arr) {
+		arr.forEach(result => {
+			console.log("result", result);
+			console.log('result value id: ', result.value.id);
+
+			let review = reviews[result.value.id];
+			
+			console.log('review: ', review);
+
+			$('.movies').append(result.html);
+			$('.movie_id_line').append(result.html);
+
+			// reviews is a class that refers to all reviews! that is why it makes ALL of them the same. beeotch
+			$('#review' + result.value.id).html(review);
+		});
+	}
+
+	var sortBy = (key) => (a, b) => (a.value[key] > b.value[key]) ? 1 : -1;
+
+	var getMovies = $.ajax({
+			url: "https://api.themoviedb.org/3/movie/popular?api_key=950598afe38cbe6f39485b57233eaad3",
+			method: "GET",
+			headers: {},
+			data: "{ movie_title: original_title }"
+		});
+
+
+	var getReviews = $.ajax({
+		 	url: "/reviews",
+		 	method: "GET"
+		 });
+
+	var renderMovies = () => {
+
+	};
+	
+	$.when(getMovies, getReviews).done((moviesData, reviewsData) => {
+		moviesData = moviesData[0];
+		reviewsData = reviewsData[0];
+
+		reviewsData.forEach(value => { 
+			let htmlVal = "<span class='movie_review_id' data-review-id=" + value.movie_id + ">"+ value.comment+ value.rating+ "</span>";
+
+			if (!reviews[value.movie_id]){
+				reviews[value.movie_id] = [htmlVal];
+			} else {
+				reviews[value.movie_id].push(htmlVal);
+			}
+		});
+
+		reviews[undefined] = '';
+		reviews[null] = '';
+
+		console.log("reviews: ", reviews);
+
+		var testMovies = mapMovies(moviesData);
+
+		appendMovies( testMovies );
+
+		$('#title-button').click(function(){
+			$('.movies').empty();
+			$('.movie_id_line').empty();
+			$('.reviews').empty();
+			appendMovies(testMovies.sort(sortBy('original_title')));
+		})
+
+		$('#release-date-button').click(function(){
+			$('.movies').empty();
+			$('.movie_id_line').empty();
+			$('.reviews').empty();
+			appendMovies(testMovies.sort(sortBy('release_date')));
+		})
+
+	    //appendMovies(movies);		 	
+	});
+	
+		$(document).on('click', '.add-review', function(){
+			console.log($(this));
+			var id = $(this)[0].dataset.movieId;
+			console.log(id);
+			activeId = id;
+		});
+		
+		$(".save_review").click(function(data) {
+			var data = {
+					  		review: {
+								rating: $('#review_rating').val(),
+								comment: $('#review_comment').val(),
+								movie_id: activeId
+							}
+						};
+			$.ajax({
+				url: "/reviews",
+				method: 'POST',
+				headers: {
+					"content-type": "application/json; charset-utf-8"
+				},
+				processData: false,
+				data: JSON.stringify(data)
+						})
+		});
+});
+			
+</script>
+
+<div class="viewing-options"> 
+	<h4> Sort By: </h4> 
+	<button id="title-button"> Title </button> 
+	<button id="release-date-button">Release Date </button> 
+	<button id='genre-button'>Genre </button> 
+</div> 
+<div class="col-md-6">
+<div class="container">
+	<div class="row">
+		<div class="movies">
+		 
+
+		</div>
+				
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="white-box col-md-6 pull-right">
+	<div class="container">
+		<div class="row">
+		 <% @latest_review.each do |review| %>
+		 	<%=review.rating %>
+		 <% end %>
+
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      
+      </div>
+
+      <div class="modal-body">
+       <%= simple_form_for @review, url: reviews_path(@review) do |f| %>
+
+        <div class="modal-body">
+          <%= f.input :rating, as: :select, collection: Review::RATINGS , class:'rating_star'%>
+          <%= f.input :comment, class: 'comment' %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button class="btn btn-primary save_review"> Add a Review </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
