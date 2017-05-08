@@ -3,6 +3,17 @@ $(document).ready(function() {
 	var activeId = null;
 	var reviews = {};
 
+	var genreObj = {};
+
+	var genres = [{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"}];
+
+	genres.forEach(genre => genreObj[genre.id] = genre.name);
+
+		console.log('genres', genreObj);
+
+
+
+
 	function addReviewClick(event) {
 		var id = $(this).dataset.movieId;
 		alert(id);
@@ -11,12 +22,12 @@ $(document).ready(function() {
 
 	function mapMovies(data) {
 	    return data.results.map(function(value) {
-	    		  	var html = "<div class='col-sm-6 white-box'>" + 
+	    		  	var html = "<div class='white-box col-md-12 '>" + 
 			"<img src=https://image.tmdb.org/t/p/w500" + value.poster_path + " class='poster-thumbnail pull-left'>" + 
 			"<h3 class='title text-center'>"+ "<a href=/reviews/"+ value.id + ">" + value.original_title +"</a>"+ "</h3>" + 
-			"<small class='center'> Release Date: " + value.release_date + "</small>" + 
-			"<blockquote class='review'>" + "</blockquote>" + 
-			"<a   class='add-review pull-right' data-toggle= 'modal' data-movie-id='" + value.id + "' data-target='#myModal'>"+ "Leave a review " + "</a>" + "<p id='review" + value.id + "'>"  + "</p>" +" </div>" +"</div>"+ "</div>";
+			"<small class='center'> Release Date: " + value.release_date + "<br/ >"+ "</small>" +"<b class='center'> Genres: " + value.genre_ids.reduce((acc, curr) => acc + ' ' + genreObj[curr], '') + "</b>" +
+			"<blockquote class='review'>" + "</blockquote>"  +
+			"<a class='add-review pull-right' data-toggle= 'modal' data-movie-id='" + value.id + "' data-target='#myModal'>"+"Leave a review" + "</a>" + "<p id='review" + value.id + "'>"  + "</p>" +" </div>" +"</div>"+ "</div>";
 
 			localStorage.setItem(value.id, JSON.stringify(value));
 			debugger;
@@ -71,7 +82,7 @@ $(document).ready(function() {
 		reviewsData = reviewsData[0];
 
 		reviewsData.forEach(value => { 
-			let htmlVal = "<span class='movie_review_id' data-review-id=" + value.movie_id + ">"+ value.comment+ value.rating+ "</span>";
+			let htmlVal = "<span class='movie_review_id' data-review-id=" + value.movie_id + ">"+ "<br />"+ value.comment+ "</span>";
 
 			if (!reviews[value.movie_id]){
 				reviews[value.movie_id] = [htmlVal];
@@ -101,6 +112,13 @@ $(document).ready(function() {
 			$('.movie_id_line').empty();
 			$('.reviews').empty();
 			appendMovies(testMovies.sort(sortBy('release_date')));
+		})
+
+		$('#genre-button').click(function(){
+			$('.movies').empty();
+			$('.movie_id_line').empty();
+			$('.reviews').empty();
+			appendMovies(testMovies.sort(sortBy('genre_ids')));
 		})
 
 	    //appendMovies(movies);		 	
@@ -141,29 +159,14 @@ $(document).ready(function() {
 	<button id="release-date-button">Release Date </button> 
 	<button id='genre-button'>Genre </button> 
 </div> 
-<div class="col-md-6">
-<div class="container">
-	<div class="row">
-		<div class="movies">
-		 
-
-		</div>
-				
-		</div>
-	</div>
-</div>
-</div>
-
-<div class="white-box col-md-6 pull-right">
-	<div class="container">
 		<div class="row">
-		 <% @latest_review.each do |review| %>
-		 	<%=review.rating %>
-		 <% end %>
-
+		<div class="movies">
+		 	
 		</div>
-	</div>
-</div>
+
+				
+	
+		
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">

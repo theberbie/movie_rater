@@ -17,23 +17,14 @@
 
 
 </script>
-	<h1 class=text-center> View All Review </h1>
+
+	<h1 class=text-center> View All Reviews </h1>
+    <div class="row">
 
 	<% @reviews.each do |review| %>
 		<% if review.movie_id.present? %>
-		    <script>
-		    var movieInfo=localStorage.getItem(<%=review.movie_id%>);
-		    var movieData = JSON.parse(movieInfo);
-
-		    localStorage.getItem(<%=review.movie_id%>);
-		    console.log(movieData);
-		   $(".title").append(movieData.original_title);
-		    </script>
-
-
-	<div class="container">
-	<div class="row">
-	<div class="white-box col-md-6">
+		   
+		<div class="white-box col-md-6 col-xs-offset-3 text-center">
 		<p class="title text-center" id=<%= review.movie_id %> > </p>
 		
 		<p> Rating:	<%=review.humanized_rating%> </p>
